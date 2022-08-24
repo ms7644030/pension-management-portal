@@ -1,0 +1,192 @@
+<div class="container mt-3">
+  <div class="row">
+    <div class="col">
+      <p class="h3 text-danger fw-bold">
+        PENSIONER DETAILS
+        <a class="btn btn-danger btn-sm" routerLink="/pensioner/add">
+          <i class="fa fa-plus-circle"></i> New</a
+        >
+      </p>
+      <p class="fst-italic">
+        Please enter Aadhaar number to know pensioner details.
+      </p>
+      <form
+        #pensionerSearch="ngForm"
+        (ngSubmit)="onSubmit(pensionerSearch.value)"
+      >
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col">
+                <input
+                  class="form-control"
+                  minlength="12"
+                  maxlength="12"
+                  type="text"
+                  placeholder="Search pensioner"
+                  #aadhaarref="ngModel"
+                  required
+                  pattern="^[0-9]*$"
+                  name="aadhaar"
+                  ngModel
+                />
+                <div
+                  *ngIf="
+                    aadhaarref.errors &&
+                    (aadhaarref.dirty || aadhaarref.touched)
+                  "
+                  class="alert alert-danger"
+                >
+                  <div [hidden]="!aadhaarref.errors?.['required']">
+                    Aadhaar is required
+                  </div>
+
+                  <div [hidden]="!(aadhaarref.errors?.['pattern'])">
+                    must be numeric!
+                  </div>
+
+                  <div
+                    [hidden]="!(aadhaarref.errors?.['minlength']) || aadhaarref.errors?.['maxlength']"
+                  >
+                    Aadhar must be 12 character long
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+                <input
+                  [disabled]="!pensionerSearch.form.valid"
+                  type="submit"
+                  class="btn btn-outline-dark"
+                  value="Search"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Spinner-->
+
+<div *ngIf="loading">
+  <app-spinner></app-spinner>
+</div>
+
+<!-- Error Message -->
+
+<div *ngIf="!loading && errorMessage">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <p class="h4 text-danger fw-bold">{{ errorMessage }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <pre>{{pensionerInfo | json}} </pre>
+<pre>{{pensionDetail | json}} </pre> -->
+
+<!-- Cards -->
+
+<div class="container mt-4" *ngIf="!loading && isNotEmpty()">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card list-group-item-danger shadow-lg">
+        <div class="card-body">
+          <p class="h3 text-danger fw-bold align-center">
+            Pensioner Information
+          </p>
+
+          <div class="row">
+            <ul class="list-group">
+              <li class="list-group-item">
+                Aadhaar Number :
+                <span class="fw-bold">{{
+                  pensionerInfo.pensioner.aadhaar_number
+                }}</span>
+              </li>
+              <li class="list-group-item">
+                Name :
+                <span class="fw-bold"> {{ pensionerInfo.pensioner.name }}</span>
+              </li>
+              <li class="list-group-item">
+                Date of Birth :
+                <span class="fw-bold">
+                  {{ pensionerInfo.pensioner.date_of_birth }}</span
+                >
+              </li>
+              <li class="list-group-item">
+                PAN number :
+                <span class="fw-bold"> {{ pensionerInfo.pensioner.pan }}</span>
+              </li>
+              <li class="list-group-item">
+                Salary :
+                <span class="fw-bold">
+                  {{ pensionerInfo.pensioner.salaryEarned.toFixed(2) }}</span
+                >
+              </li>
+              <li class="list-group-item">
+                Allowances :
+                <span class="fw-bold">
+                  {{ pensionerInfo.pensioner.allowances.toFixed(2) }}</span
+                >
+              </li>
+              <li class="list-group-item">
+                Pension type :
+                <span class="fw-bold">
+                  {{ pensionerInfo.pensioner.selfOrFamily }}</span
+                >
+              </li>
+              <li class="list-group-item">
+                Bank :
+                <span class="fw-bold">
+                  {{ pensionerInfo.bankdetail.bank_name }}</span
+                >
+              </li>
+              <li class="list-group-item">
+                Account Number :
+                <span class="fw-bold">
+                  {{ pensionerInfo.bankdetail.account_number }}</span
+                >
+              </li>
+              <li class="list-group-item">
+                Bank type :
+                <span class="fw-bold">
+                  {{ pensionerInfo.bankdetail.publicOrprivate_bank }}</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card list-group-item-danger shadow-lg">
+        <div class="card-body">
+          <p class="h3 text-danger fw-bold align-center">Pension Detail</p>
+
+          <div class="row">
+            <ul class="list-group">
+              <li class="list-group-item">
+                Pension Amount:
+                <span class="fw-bold">{{
+                  pensionDetail.pensionAmount.toFixed(2)
+                }}</span>
+              </li>
+              <li class="list-group-item">
+                Bank Charges :
+                <span class="fw-bold">{{
+                  pensionDetail.bankServiceCharge.toFixed(2)
+                }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

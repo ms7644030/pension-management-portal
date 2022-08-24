@@ -1,0 +1,80 @@
+<div class="col-sm-24">
+  <div class="card card-container">
+    <img
+      id="profile-img"
+      src="//ssl.gstatic.com/accounts/ui/avatar_2x.png"
+      class="profile-img-card"
+    />
+
+    <!-- Loading Spinner-->
+
+    <div *ngIf="loading">
+      <app-spinner></app-spinner>
+    </div>
+
+    <form
+      *ngIf="!isLoggedIn"
+      name="form"
+      (ngSubmit)="f.form.valid && onSubmit()"
+      #f="ngForm"
+      novalidate
+    >
+      <div class="mb-2">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          class="form-control"
+          name="username"
+          [(ngModel)]="form.username"
+          required
+          #username="ngModel"
+        />
+        <div
+          class="alert alert-danger"
+          role="alert"
+          *ngIf="username.errors && f.submitted"
+        >
+          Username is required!
+        </div>
+      </div>
+      <div class="mb-2">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          class="form-control"
+          name="password"
+          [(ngModel)]="form.password"
+          required
+          minlength="6"
+          #password="ngModel"
+        />
+        <div
+          class="alert alert-danger"
+          role="alert"
+          *ngIf="password.errors && f.submitted"
+        >
+          <div *ngIf="password.errors['required']">Password is required</div>
+          <div *ngIf="password.errors['minlength']">
+            Password must be at least 6 characters
+          </div>
+        </div>
+      </div>
+      <div class="mb-2">
+        <button class="btn btn-primary btn-block">Login</button>
+      </div>
+      <div class="mb-2">
+        <div
+          class="alert alert-danger"
+          role="alert"
+          *ngIf="f.submitted && isLoginFailed"
+        >
+          Invalid username or password
+        </div>
+      </div>
+    </form>
+
+    <!--<div class="alert alert-success" *ngIf="isLoggedIn">
+      Logged in as Admin!
+    </div> -->
+  </div>
+</div>

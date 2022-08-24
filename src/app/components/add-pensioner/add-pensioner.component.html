@@ -1,0 +1,426 @@
+<div class="container mt-3">
+  <div class="row">
+    <div class="col">
+      <p class="h3 fw-bold text-danger">Add Pensioner</p>
+      <p class="fst-italic">pensioner Details required</p>
+    </div>
+  </div>
+</div>
+
+<!-- Loading Spinner-->
+
+<div *ngIf="loading">
+  <app-spinner></app-spinner>
+</div>
+
+<!-- Error Message -->
+
+<div *ngIf="!loading && errorMessage">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <p class="h4 text-danger fw-bold">{{ errorMessage }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
+ Pensioner form
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <form>
+                <div class="mb-2">
+                    <input [(ngModel)] = "pensionerInfo.pensioner.aadhaar_number " name="aadhaar_number" type="text" class="form-control" placeholder="Aadhaar Number">
+                </div>
+
+                <div class="mb-2">
+                    <input [(ngModel)] = "pensionerInfo.pensioner.name " name="name" type="text" class="form-control" placeholder="Name">
+                </div>
+
+                <div class="mb-2">
+                    <input [(ngModel)] = "pensionerInfo.pensioner.date_of_birth" name="dob" type="date" class="form-control" placeholder="Date of Birth">
+                </div>
+
+                <div class="mb-2">
+                    <input [(ngModel)] = "pensionerInfo.pensioner.pan " name="pan_number" type="text" class="form-control" placeholder="PAN Number">
+                </div>
+
+                <div class="mb-2">
+                    <input [(ngModel)] = "pensionerInfo.pensioner.salaryEarned " name="salary_ernd" type="text" class="form-control" placeholder="Salary">
+                </div>
+
+                <div class="mb-2">
+                    <input [(ngModel)] = "pensionerInfo.pensioner.allowances " name="allowances" type="text" class="form-control" placeholder="Allowances">
+                </div>
+
+                <div class="mb-2">
+                    <select 
+                    [(ngModel)] = "pensionerInfo.pensioner.selfOrFamily "
+                     name="pension_type" 
+                     
+                     class="form-control">
+
+                        <option value="">Select Pension type</option>
+                        <option *ngFor=" let pt of pensionType" [value]="pt" >{{pt}}</option>
+                        
+                    </select>
+                </div>
+
+                <div class="mb-2">
+                    <input [(ngModel)] = "pensionerInfo.bankdetail.bank_name " name="bank_name" type="text" class="form-control" placeholder="Bank Name">
+                </div>
+
+                <div class="mb-2">
+                    <input [(ngModel)] = "pensionerInfo.bankdetail.account_number " name="account_number" type="text" class="form-control" placeholder="Account Number">
+                </div>
+
+                <div class="mb-2">
+                    <select
+                    [(ngModel)] = "pensionerInfo.bankdetail.publicOrprivate_bank " 
+                    name="publicOrprivate_bank"
+                     class="form-control">
+                        
+                        <option value="">Select Bank type</option>
+                        <option  *ngFor=" let bt of bankType"  [value] ="bt">{{bt}}</option>
+                        
+                    </select>
+                </div>
+
+                <div class="mb-2">
+                    <input type="submit" class="btn btn-danger" value="Add">
+                    <a class="btn btn-dark ms-2" routerLink = "/">Close</a>
+                </div>
+
+                
+            </form>
+        </div>
+    </div>
+</div>
+ -->
+
+<!--Pensioner form-->
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <form [formGroup]="pensionerForm" (ngSubmit)="onSubmit()">
+        <div class="mb-2">
+          <label for="aadhaarNumber">Aadhaar Number :</label>
+          <input
+            formControlName="AadhaarNumber"
+            [ngClass]="{
+              'is-invalid':
+                submitted && pensionerForm.controls?.['AadhaarNumber'].errors
+            }"
+            type="text"
+            class="form-control"
+            id="aadhaarNumber"
+            placeholder="Aadhaar Number"
+          />
+          <div
+            *ngIf="submitted && pensionerForm.controls?.['AadhaarNumber'].errors"
+          >
+            <div
+              *ngIf="submitted && pensionerForm.controls?.['AadhaarNumber'].errors?.['required']"
+              class="text-danger"
+            >
+              required
+            </div>
+            <div
+              *ngIf="submitted && (pensionerForm.controls?.['AadhaarNumber'].errors?.['minlength'] || pensionerForm.controls?.['AadhaarNumber'].errors?.['maxlength'])"
+              class="text-danger"
+            >
+              Aadhaar number should be 12 character long
+            </div>
+            <div
+              *ngIf="submitted && (pensionerForm.controls?.['AadhaarNumber'].errors?.['pattern'] || pensionerForm.controls?.['AadhaarNumber'].errors?.['maxlength'])"
+              class="text-danger"
+            >
+              must be numric!
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label for="name">Pensioner Name :</label>
+
+          <input
+            formControlName="Name"
+            [ngClass]="{
+                'is-invalid':
+                  submitted && pensionerForm.controls?.['Name'].errors
+              }"
+            type="text"
+            id="name"
+            class="form-control"
+            placeholder="Name"
+          />
+          <div *ngIf="submitted && pensionerForm.controls?.['Name'].errors">
+            <div
+              *ngIf="submitted && pensionerForm.controls?.['Name'].errors?.['required']"
+              class="text-danger"
+            >
+              required
+            </div>
+            <div
+              *ngIf="submitted && (pensionerForm.controls?.['Name'].errors?.['minlength'])"
+              class="text-danger"
+            >
+              Name must be more than four chracter long
+            </div>
+
+            <div
+              *ngIf="submitted && (pensionerForm.controls?.['Name'].errors?.['pattern'])"
+              class="text-danger"
+            >
+              must be character!
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label for="dob">Date of Birth :</label>
+
+          <input
+            formControlName="DateOfBirth"
+            [ngClass]="{
+                'is-invalid':
+                  submitted && pensionerForm.controls?.['DateOfBirth'].errors
+              }"
+            type="date"
+            id="dob"
+            class="form-control"
+            placeholder="Date of Birth"
+          />
+          <div
+            *ngIf="submitted && pensionerForm.controls?.['DateOfBirth'].errors"
+          >
+            <div
+              *ngIf="submitted && pensionerForm.controls?.['DateOfBirth'].errors?.['required']"
+              class="text-danger"
+            >
+              required
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label for="pan">PAN Number :</label>
+
+          <input
+            formControlName="PAN"
+            [ngClass]="{
+                'is-invalid':
+                  submitted && pensionerForm.controls?.['PAN'].errors
+              }"
+            type="text"
+            id="pan"
+            class="form-control"
+            placeholder="PAN Number"
+          />
+          <div *ngIf="submitted && pensionerForm.controls?.['PAN'].errors">
+            <div
+              *ngIf="submitted && pensionerForm.controls?.['PAN'].errors?.['required']"
+              class="text-danger"
+            >
+              required
+            </div>
+            <div
+              *ngIf="submitted && (pensionerForm.controls?.['PAN'].errors?.['minlength'] || pensionerForm.controls?.['PAN'].errors?.['maxlength'])"
+              class="text-danger"
+            >
+              PAN number should be 10 character long
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label for="slry">Salary :</label>
+
+          <input
+            formControlName="Salary"
+            [ngClass]="{
+                'is-invalid':
+                  submitted && pensionerForm.controls?.['Salary'].errors
+              }"
+            type="text"
+            id="slry"
+            class="form-control"
+            placeholder="Salary"
+          />
+          <div *ngIf="submitted && pensionerForm.controls?.['Salary'].errors">
+            <div
+              *ngIf="submitted && pensionerForm.controls?.['Salary'].errors?.['required']"
+              class="text-danger"
+            >
+              required
+            </div>
+            <div
+              *ngIf="submitted && (pensionerForm.controls?.['Salary'].errors?.['pattern'] )"
+              class="text-danger"
+            >
+              must be numeric!
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label for="alw">Allowances :</label>
+
+          <input
+            formControlName="Allowances"
+            [ngClass]="{
+                'is-invalid':
+                  submitted && pensionerForm.controls?.['Allowances'].errors
+              }"
+            type="text"
+            id="alw"
+            class="form-control"
+            placeholder="Allowances"
+          />
+          <div
+            *ngIf="submitted && pensionerForm.controls?.['Allowances'].errors"
+          >
+            <div
+              *ngIf="submitted && pensionerForm.controls?.['Allowances'].errors?.['required']"
+              class="text-danger"
+            >
+              required
+            </div>
+            <div
+              *ngIf="submitted && (pensionerForm.controls?.['Allowances'].errors?.['pattern'] )"
+              class="text-danger"
+            >
+              must be numeric
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2 formGroup">
+          <label for="inputpensiontype">Pension type :</label>
+
+          <select
+            formControlName="SelfOrFamily"
+            [ngClass]="{
+                'is-invalid':
+                  submitted && pensionerForm.controls?.['SelfOrFamily'].errors
+              }"
+            class="form-control"
+            id="inputpensiontype"
+          >
+            <option selected [ngValue]="null">Select Pension type</option>
+            <option *ngFor="let item of pensionType" [ngValue]="item">
+              {{ item }}
+            </option>
+          </select>
+          <div
+            *ngIf="submitted && pensionerForm.controls?.['SelfOrFamily'].errors"
+          >
+            <div
+              *ngIf="submitted && pensionerForm.controls?.['SelfOrFamily'].errors?.['required']"
+              class="text-danger"
+            >
+              required
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label for="bankname">Bank Name :</label>
+
+          <input
+            formControlName="BankName"
+            [ngClass]="{
+                'is-invalid':
+                  submitted && pensionerForm.controls?.['BankName'].errors
+              }"
+            type="text"
+            id="bankname"
+            class="form-control"
+            placeholder="Bank Name"
+          />
+          <div *ngIf="submitted && pensionerForm.controls?.['BankName'].errors">
+            <div
+              *ngIf="submitted && pensionerForm.controls?.['BankName'].errors?.['required']"
+              class="text-danger"
+            >
+              required
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label for="actn">Account Number :</label>
+
+          <input
+            formControlName="AccountNumber"
+            [ngClass]="{
+                'is-invalid':
+                  submitted && pensionerForm.controls?.['AccountNumber'].errors
+              }"
+            type="text"
+            id="actn"
+            class="form-control"
+            placeholder="Account Number"
+          />
+          <div
+            *ngIf="submitted && pensionerForm.controls?.['AccountNumber'].errors"
+          >
+            <div
+              *ngIf="submitted && pensionerForm.controls?.['AccountNumber'].errors?.['required']"
+              class="text-danger"
+            >
+              required
+            </div>
+            <div
+              *ngIf="submitted && (pensionerForm.controls?.['AccountNumber'].errors?.['pattern'] )"
+              class="text-danger"
+            >
+              must be numric
+            </div>
+
+            <div
+              *ngIf="submitted && (pensionerForm.controls?.['AccountNumber'].errors?.['minlength'] || pensionerForm.controls?.['AccountNumber'].errors?.['maxlength'])"
+              class="text-danger"
+            >
+              Account number should be in range of 10 to 16 character long
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <label for="bkt">Bank type :</label>
+
+          <select
+            formControlName="PublicOrPrivateBank"
+            [ngClass]="{
+                'is-invalid':
+                  submitted && pensionerForm.controls?.['PublicOrPrivateBank'].errors
+              }"
+            class="form-control"
+            id="bkt"
+          >
+            <option selected [ngValue]="null">Select Bank type</option>
+            <option *ngFor="let bt of bankType" [value]="bt">{{ bt }}</option>
+          </select>
+          <div
+            *ngIf="submitted && pensionerForm.controls?.['PublicOrPrivateBank'].errors"
+          >
+            <div
+              *ngIf="submitted && pensionerForm.controls?.['PublicOrPrivateBank'].errors?.['required']"
+              class="text-danger"
+            >
+              required
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-2">
+          <input type="submit" class="btn btn-danger" value="Add" />
+          <a class="btn btn-dark ms-2" routerLink="/pensioner/admin">Close</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
